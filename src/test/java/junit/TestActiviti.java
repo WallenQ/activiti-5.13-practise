@@ -18,9 +18,9 @@ public class TestActiviti {
 		ProcessEngineConfiguration processEngineConfiguration
 				= ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
 		processEngineConfiguration.setJdbcDriver("com.mysql.cj.jdbc.Driver");
-		processEngineConfiguration.setJdbcUrl("jdbc:mysql://localhost:3306/activiti_practise?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8");
+		processEngineConfiguration.setJdbcUrl("jdbc:mysql://47.105.243.180:3306/activiti_practise?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8");
 		processEngineConfiguration.setJdbcUsername("root");
-		processEngineConfiguration.setJdbcPassword("123456");
+		processEngineConfiguration.setJdbcPassword("ntchst@3306");
 
 //		public static final String DB_SCHEMA_UPDATE_FALSE = "false";不能自动创建表，必须表先存在
 //		public static final String DB_SCHEMA_UPDATE_CREATE_DROP = "create-drop";先删除再创建

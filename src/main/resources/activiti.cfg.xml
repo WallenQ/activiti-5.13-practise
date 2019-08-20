@@ -13,9 +13,9 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <property name="jdbcUsername" value="${jdbc.username}" />
         <property name="jdbcPassword" value="${jdbc.password}" />-->
         <property name="jdbcDriver" value="com.mysql.cj.jdbc.Driver" />
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activiti_practise?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8" />
+        <property name="jdbcUrl" value="jdbc:mysql://47.105.243.180:3306/activiti_practise?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8" />
         <property name="jdbcUsername" value="root" />
-        <property name="jdbcPassword" value="123456" />
+        <property name="jdbcPassword" value="ntchst@3306" />
         <!-- 没有表就创建表-->
         <property name="databaseSchemaUpdate" value="true"/>
     </bean>

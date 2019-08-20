@@ -16,14 +16,32 @@ public class HelloWorld {
 	 * 流程部署定义
 	 */
 	@Test
-	public void deploymentProcessDefinition() {
-		Deployment deployment = processEngine.getRepositoryService()//与流程定义和部署对象相关的service
-				.createDeployment()//创建一个部署对象
-				.name("helloworld入门程序")//添加部署名称
-				.addClasspathResource("helloWorld.bpmn")//从classpath的资源中加载，一次只能加载一个
+	public void deploymentProcessDefinitionTest() {
+		//与流程定义和部署对象相关的service
+		Deployment deployment = processEngine.getRepositoryService()
+				//创建一个部署对象
+				.createDeployment()
+				//添加部署名称
+				.name("helloworld入门程序")
+				//从classpath的资源中加载，一次只能加载一个
+				.addClasspathResource("helloWorld.bpmn")
 				.addClasspathResource("helloWorld1.png")
 				.deploy();//完成部署
 		System.out.println(deployment.getId());
 		System.out.println(deployment.getName());
+	}
+
+	/**
+	 * 启动流程实例
+	 */
+	@Test
+	public void startProcessInstanceTest() {
+		//流程定义的key
+		String processDefinitionKey = "helloworld";
+
+		//与正在执行的流程实例和执行对象相关的service
+		processEngine.getRuntimeService()
+				//使用流程定义的可以启动流程实例，key对应helloworld.bpmn文件中id的属性，使用key值启动，默认是按照最新版本的流程启动
+				.startProcessInstanceByKey(processDefinitionKey);
 	}
 }
