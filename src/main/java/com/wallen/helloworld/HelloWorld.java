@@ -3,6 +3,7 @@ package com.wallen.helloworld;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Test;
 
 /**
@@ -27,8 +28,10 @@ public class HelloWorld {
 				.addClasspathResource("helloWorld.bpmn")
 				.addClasspathResource("helloWorld1.png")
 				.deploy();//完成部署
-		System.out.println(deployment.getId());
-		System.out.println(deployment.getName());
+		//1
+		System.out.println("部署id：" + deployment.getId());
+		//helloword入门程序
+		System.out.println("部署名称：" + deployment.getName());
 	}
 
 	/**
@@ -37,11 +40,15 @@ public class HelloWorld {
 	@Test
 	public void startProcessInstanceTest() {
 		//流程定义的key
-		String processDefinitionKey = "helloworld";
+		String processDefinitionKey = "helloword";
 
 		//与正在执行的流程实例和执行对象相关的service
-		processEngine.getRuntimeService()
+		ProcessInstance processInstance = processEngine.getRuntimeService()
 				//使用流程定义的可以启动流程实例，key对应helloworld.bpmn文件中id的属性，使用key值启动，默认是按照最新版本的流程启动
 				.startProcessInstanceByKey(processDefinitionKey);
+		//101
+		System.out.println("流程实例Id" + processInstance.getId());
+		//helloword:1:5
+		System.out.println("流程定义ID：" + processInstance.getProcessDefinitionId());
 	}
 }
