@@ -13,7 +13,7 @@ import java.util.List;
  * @Author: Wallen
  * @Date: 2019/8/18 22:11
  */
-public class HelloWorld {
+public class HelloWorldTest {
 	ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
 	/**
@@ -60,7 +60,7 @@ public class HelloWorld {
 	 */
 	@Test
 	public void findMypersonalTaskTest() {
-		String assignee = "张三";
+		String assignee = "李四";
 		//与正在执行的任务相关的service
 		List<Task> list = processEngine.getTaskService()
 				//创建任务查询对象
@@ -80,5 +80,18 @@ public class HelloWorld {
 				System.out.println("#########");
 			}
 		}
+	}
+
+	/**
+	 * 完成我的任务
+	 */
+	@Test
+	public void completeMyPersonalTaskTest () {
+		//任务ID
+		String taskId = "104";
+		//与正在执行的任务相关的service
+		processEngine.getTaskService()
+				.complete(taskId);
+		System.out.println("完成任务，任务ID：" + taskId);
 	}
 }
