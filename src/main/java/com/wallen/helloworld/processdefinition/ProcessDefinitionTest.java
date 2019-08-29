@@ -1,4 +1,4 @@
-package com.wallen.helloworld.processDefinition;
+package com.wallen.helloworld.processdefinition;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
