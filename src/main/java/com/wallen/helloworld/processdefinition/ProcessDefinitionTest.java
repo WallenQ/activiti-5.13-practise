@@ -4,8 +4,11 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipInputStream;
@@ -111,4 +114,58 @@ public class ProcessDefinitionTest {
 		}
 
 	}
+
+	/**
+	 * 删除流程定义
+	 */
+	@Test
+	public void deleteProcessDefinitionTest () {
+		//使用部署id，完成删除
+		String deploymentId  = "601";
+		/**
+		 * 不带级联的删除
+		 * 只能删除没有启动的流程，如果流程启动，会抛出异常
+		 */
+		/*processEngine.getRepositoryService()
+				.deleteDeployment(deploymentId);*/
+		/**
+		 * 级联删除
+		 * 不管流程是否启动，都能删除
+		 */
+		processEngine.getRepositoryService()
+				.deleteDeployment(deploymentId , true);
+
+		System.out.println("删除成功！");
+	}
+
+	/**
+	 * 查看流程图
+	 */
+	@Test
+	public void viewPictureTest () throws IOException {
+		//将生成的图片放到文件夹下
+		String deploymentId  = "501";
+		//获取图片资源的名称
+		List<String> nameList = processEngine.getRepositoryService()
+				.getDeploymentResourceNames(deploymentId);
+		//定义图片资源的名称
+		String resourceName = "";
+		if (null != nameList && nameList.size() > 0) {
+			for (String name : nameList) {
+				if (name.contains(".png")) {
+					resourceName = name;
+				}
+			}
+		}
+
+		//获取图片的输入流
+		InputStream inputStream = processEngine.getRepositoryService()
+				.getResourceAsStream(deploymentId , resourceName);
+		//将图片生成到D盘的目录
+		File file = new File("D:/" + resourceName);
+		// 将输入流的图片写到D盘下
+		FileUtils.copyInputStreamToFile(inputStream , file);
+
+	}
+
 }
