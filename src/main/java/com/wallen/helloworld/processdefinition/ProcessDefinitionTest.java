@@ -10,7 +10,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -94,12 +97,12 @@ public class ProcessDefinitionTest {
 				/*返回的结果集*/
 				//返回一个集合列表，封装流程定义
 				.list();
-				//返回唯一结果集
-				//.singleResult();
-				//返回结果集数量
-				//.count();
-				//分页查询
-				//.listPage(firstResult , maxResults);
+		//返回唯一结果集
+		//.singleResult();
+		//返回结果集数量
+		//.count();
+		//分页查询
+		//.listPage(firstResult , maxResults);
 		if (null != processDefinitions && processDefinitions.size() > 0) {
 			for (ProcessDefinition processDefinition : processDefinitions) {
 				System.out.println("流程定义id：" + processDefinition.getId());
@@ -119,9 +122,9 @@ public class ProcessDefinitionTest {
 	 * 删除流程定义
 	 */
 	@Test
-	public void deleteProcessDefinitionTest () {
+	public void deleteProcessDefinitionTest() {
 		//使用部署id，完成删除
-		String deploymentId  = "601";
+		String deploymentId = "501";
 		/**
 		 * 不带级联的删除
 		 * 只能删除没有启动的流程，如果流程启动，会抛出异常
@@ -133,7 +136,7 @@ public class ProcessDefinitionTest {
 		 * 不管流程是否启动，都能删除
 		 */
 		processEngine.getRepositoryService()
-				.deleteDeployment(deploymentId , true);
+				.deleteDeployment(deploymentId, true);
 
 		System.out.println("删除成功！");
 	}
@@ -142,9 +145,9 @@ public class ProcessDefinitionTest {
 	 * 查看流程图
 	 */
 	@Test
-	public void viewPictureTest () throws IOException {
+	public void viewPictureTest() throws IOException {
 		//将生成的图片放到文件夹下
-		String deploymentId  = "501";
+		String deploymentId = "501";
 		//获取图片资源的名称
 		List<String> nameList = processEngine.getRepositoryService()
 				.getDeploymentResourceNames(deploymentId);
@@ -160,12 +163,70 @@ public class ProcessDefinitionTest {
 
 		//获取图片的输入流
 		InputStream inputStream = processEngine.getRepositoryService()
-				.getResourceAsStream(deploymentId , resourceName);
+				.getResourceAsStream(deploymentId, resourceName);
 		//将图片生成到D盘的目录
 		File file = new File("D:/" + resourceName);
 		// 将输入流的图片写到D盘下
-		FileUtils.copyInputStreamToFile(inputStream , file);
+		FileUtils.copyInputStreamToFile(inputStream, file);
 
+	}
+
+	/**
+	 * 查询最新版本的流程定义
+	 */
+	@Test
+	public void findLastestVersionProcessDefinitionTest() {
+		List<ProcessDefinition> processDefinitionList = processEngine.getRepositoryService()
+				.createProcessDefinitionQuery()
+				//使用流程定义版本升序排列
+				.orderByProcessDefinitionVersion().asc()
+				.list();
+
+		//map的key对应流程定义的key，value对应流程定义对象
+		Map<String, ProcessDefinition> map = new LinkedHashMap<String, ProcessDefinition>();
+		if (null != processDefinitionList && processDefinitionList.size() > 0) {
+			for (ProcessDefinition processDefinition : processDefinitionList) {
+				map.put(processDefinition.getId(), processDefinition);
+			}
+		}
+
+		List<ProcessDefinition> processDefinitions = new ArrayList<ProcessDefinition>(map.values());
+		if (null != processDefinitions && processDefinitions.size() > 0) {
+			for (ProcessDefinition processDefinition : processDefinitions) {
+				System.out.println("流程定义id：" + processDefinition.getId());
+				System.out.println("流程定义的名称：" + processDefinition.getName());
+				System.out.println("流程定义的key：" + processDefinition.getKey());
+				System.out.println("流程定义的版本：" + processDefinition.getVersion());
+				System.out.println("资源名称bpmn文件：" + processDefinition.getResourceName());
+				System.out.println("资源名称png文件：" + processDefinition.getDiagramResourceName());
+				System.out.println("部署对象id：" + processDefinition.getDeploymentId());
+				System.out.println("#########################################");
+			}
+		}
+	}
+
+	/**
+	 * 删除流程定义，删除key相同，所有不同版本的流程定义
+	 */
+	@Test
+	public void deleteProcessDefinitionByKeyTest() {
+		//流程定义的key
+		String processDefinitionKey = "helloword";
+		List<ProcessDefinition> processDefinitionList = processEngine.getRepositoryService()
+				.createProcessDefinitionQuery()
+				//使用流程定义版本升序排列
+				.processDefinitionKey(processDefinitionKey)
+				.list();
+		//遍历，获取每个流程定义的部署id
+		if (null != processDefinitionList && processDefinitionList.size() > 0) {
+			for (ProcessDefinition processDefinition : processDefinitionList) {
+				String deploymentId = processDefinition.getId();
+				processEngine.getRepositoryService()
+						.deleteDeployment(deploymentId , true);
+			}
+		}
+
+		System.out.println("删除成功！");
 	}
 
 }
