@@ -2,6 +2,8 @@ package com.wallen.helloworld;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -86,7 +88,7 @@ public class HelloWorldTest {
 	 * 完成我的任务
 	 */
 	@Test
-	public void completeMyPersonalTaskTest () {
+	public void completeMyPersonalTaskTest() {
 		//任务ID
 		String taskId = "104";
 		//与正在执行的任务相关的service
@@ -94,4 +96,65 @@ public class HelloWorldTest {
 				.complete(taskId);
 		System.out.println("完成任务，任务ID：" + taskId);
 	}
+
+	/**
+	 * 查询流程状态
+	 */
+	@Test
+	public void isProcessEndTest() {
+		String processInstanceId = "1001";
+		//与正在执行的流程实例和执行对象相关的service
+		ProcessInstance processInstance = processEngine.getRuntimeService()
+				//创建流程实例查询
+				.createProcessInstanceQuery()
+				//实用流程实例ID查询
+				.processInstanceId(processInstanceId)
+				.singleResult();
+		if (null == processInstance) {
+			System.out.println("流程已经结束！");
+		} else {
+			System.out.println("流程没有结束");
+		}
+	}
+
+	/**
+	 * 查询历史任务
+	 */
+	@Test
+	public void findHistoryTaskTest() {
+		String taskAssignee = "张三";
+		//创建与历史数据（历史表）相关的service
+		List<HistoricTaskInstance> historicTaskInstanceList = processEngine.getHistoryService()
+				//创建历史任务实例查询
+				.createHistoricTaskInstanceQuery()
+				//指定历史任务办理人
+				.taskAssignee(taskAssignee)
+				.list();
+		if (null != historicTaskInstanceList && historicTaskInstanceList.size() > 0) {
+			for (HistoricTaskInstance historicTaskInstance : historicTaskInstanceList) {
+				System.out.println(historicTaskInstance.getId() + "		" + historicTaskInstance.getName() + "	"
+						+ historicTaskInstance.getProcessInstanceId() + "	" + historicTaskInstance.getStartTime() + "		"
+						+ historicTaskInstance.getEndTime() + "		" + historicTaskInstance.getDurationInMillis());
+				System.out.println("******************");
+			}
+		}
+	}
+
+	/**
+	 * 查询历史流程实例
+	 */
+	@Test
+	public void findHistoryProcessInstanceTest() {
+		String processInstanceId = "101";
+		HistoricProcessInstance historicProcessInstance = processEngine.getHistoryService()
+				.createHistoricProcessInstanceQuery()
+				//使用流程实例id查询
+				.processInstanceId(processInstanceId)
+				.singleResult();
+		System.out.println(historicProcessInstance.getId() + "		" + historicProcessInstance.getProcessDefinitionId()
+				+ "		" + historicProcessInstance.getStartTime() + "		" + historicProcessInstance.getEndTime() + "	"
+				+ historicProcessInstance.getDurationInMillis());
+	}
+
+
 }

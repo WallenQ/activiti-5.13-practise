@@ -191,7 +191,7 @@ public class ProcessDefinitionTest {
 		}
 
 		List<ProcessDefinition> processDefinitions = new ArrayList<ProcessDefinition>(map.values());
-		if (null != processDefinitions && processDefinitions.size() > 0) {
+		if (processDefinitions.size() > 0) {
 			for (ProcessDefinition processDefinition : processDefinitions) {
 				System.out.println("流程定义id：" + processDefinition.getId());
 				System.out.println("流程定义的名称：" + processDefinition.getName());
@@ -212,6 +212,7 @@ public class ProcessDefinitionTest {
 	public void deleteProcessDefinitionByKeyTest() {
 		//流程定义的key
 		String processDefinitionKey = "helloword";
+
 		List<ProcessDefinition> processDefinitionList = processEngine.getRepositoryService()
 				.createProcessDefinitionQuery()
 				//使用流程定义版本升序排列
